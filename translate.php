@@ -2,6 +2,12 @@
 <?php include "modulekit/loader.php"; /* loads all php-includes */ ?>
 <?php include "types/osm_tags.php"; /* loads all php-includes */ ?>
 <?php
+session_start();
+
+if(!isset($_SESSION['username'])) {
+  Header("Location: .");
+}
+
 call_hooks("init"); /* Initializes all modules, also lang module */
 
 $file = "data/openstreetmap-tag-translations/tags/de.json";
