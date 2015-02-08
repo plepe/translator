@@ -1,5 +1,6 @@
 <?php include "conf.php"; /* load a local configuration */ ?>
 <?php include "modulekit/loader.php"; /* loads all php-includes */ ?>
+<?php include "types/osm_tags.php"; /* loads all php-includes */ ?>
 <?php
 call_hooks("init"); /* Initializes all modules, also lang module */
 
@@ -36,9 +37,13 @@ foreach($data as $k => $v) {
   }
 }
 
+form_load($data, $form_def);
+
 $form = new form('lang', $form_def);
 if($form->is_complete()) {
   $data = $form->save_data();
+
+  form_save($data, $form_def);
 
   // remove null values
   foreach($data as $k=>$v) {
