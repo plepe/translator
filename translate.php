@@ -7,10 +7,26 @@ session_start();
 if(!isset($_SESSION['username'])) {
   Header("Location: .");
 }
+if(!isset($_REQUEST['app']) || (!isset($_REQUEST['lang']))) {
+  Header("Location: .");
+}
 
 call_hooks("init"); /* Initializes all modules, also lang module */
 
-$file = "data/openstreetmap-tag-translations/tags/de.json";
+if(!array_key_exists($_REQUEST['app'], $translation_apps)) {
+  print "Invalid App!";
+  exit;
+}
+
+$app = $translation_apps[$_REQUEST['app']];
+$lang = $_REQUEST['lang'];
+
+if(!preg_match("/^[a-z_\-A-Z]*$/", $lang)) {
+  print "Invalid language code!";
+  exit;
+}
+
+$file = "{$app['path']}/{$lang}.json";
 
 $data = json_decode(file_get_contents($file), true);
 $template_str = array(
@@ -45,7 +61,7 @@ foreach($data as $k => $v) {
 
 form_load($data, $form_def);
 
-$form = new form('lang', $form_def);
+$form = new form('data', $form_def);
 if($form->is_complete()) {
   $data = $form->save_data();
 

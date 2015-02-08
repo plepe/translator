@@ -41,6 +41,47 @@ try {
   print_r($E);
 }
 
+$languages = array();
+
+foreach($translation_apps as $id=>$data) {
+  $f = opendir($data['path']);
+  while($r = readdir($f)) {
+    if(preg_match("/^(.*)\.json$/", $r, $m) && ($m[1] != "template")) {
+      $languages[$m[1]] = lang("lang:{$m[1]}");
+    }
+  }
+  closedir($f);
+}
+
+$form_def = array(
+  'lang' => array(
+    'type' => 'select',
+    'name' => 'Language',
+    'values' => $languages,
+    'req' => true,
+  ),
+  'app' => array(
+    'type' => 'radio',
+    'name' => 'Application',
+    'values' => array_map(function($e) {
+        return $e['name'];
+      }, $translation_apps),
+    'req' => true,
+  ),
+);
+
+$form = new form(null, $form_def);
+
+if($form->is_complete()) {
+  $parts = array();
+  foreach($form->get_data() as $k=>$v) {
+    $parts[] = urlencode($k) ."=". urlencode($v);
+  }
+
+  $url = "translate.php?" . implode("&", $parts);
+  Header("Location: {$url}");
+}
+
 ?>
 <html>
 <head>
@@ -52,8 +93,16 @@ try {
 <body>
 
 <?php
-print "Hi, User {$_SESSION['username']}!";
+print "<p>Hi, User {$_SESSION['username']}!";
+
+print "<p>What do you want to translate:\n";
 ?>
+<form method='get'>
+<?php
+print $form->show();
+?>
+<input type='submit'>
+</form>
 
 
 </body>

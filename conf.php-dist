@@ -1,3 +1,11 @@
 <?php
 $oauth_conskey = '';
 $oauth_conssec = '';
+
+$translation_apps = array(
+  'osm_tags' => array(
+    "path" => "/path/to/openstreetmap-tag-translations/tags/",
+    "type" => "osm_tags",
+    "name" => "OSM Tags",
+  ),
+);
