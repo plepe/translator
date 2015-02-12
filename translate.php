@@ -81,6 +81,10 @@ if($form->is_complete()) {
   }
 
   file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+
+  chdir($app['path']);
+  system("git add \"{$lang}.json\"");
+  system("git -c user.name='OSM Translator' -c user.email='translator@openstreetbrowser.org' commit -m 'Update translation ({$lang})' --author='{$_SESSION['username']} <{$_SESSION['username']}@openstreetmap.org>'");
 }
 
 if($form->is_empty())
