@@ -25,16 +25,33 @@ class osm_tags extends default_file {
         $base = $k;
 
       if(($last_base !== null) && ($last_base != $base)) {
-        $form_def =
-          array_slice($form_def, 0, $i, true) +
-          array("NEW:$last_base"=>array(
-            'type'=>"form",
-            'name'=>"new values for {$last_base}",
-            'def'=>call_user_func(array($this, $form_string_fun), $last_base . "=NEW", "new_value"),
-            'count'=>array("default"=>0, 'order'=>false, 'button:add_element'=>"Add new value"))) +
-          array_slice($form_def, $i, sizeof($form_def) - $i, true);
+        if((!array_key_exists($last_base, $template)) ||
+           ($this->lang == "template") || // lang 'template' can always add values
+           array_key_exists("translate_values", $template[$last_base]) &&
+           $template[$last_base]["translate_values"]) {
 
-        $i++;
+          $el = array(
+              'type'    => "form",
+              'name'    => "new values for {$last_base}",
+              'def'     => call_user_func(array($this, $form_string_fun), $last_base . "=NEW", "new_value"),
+              'count'   => array(
+                'default'       => 0,
+                'order'         => false,
+                'button:add_element' => "Add new value"
+              )
+            );
+
+          // TODO: show "new values" only when "translate_values" is checked
+          //if($this->lang == "template")
+          //  $el['count']['show_depend'] = array("check", "translate_values", true);
+
+          $form_def =
+            array_slice($form_def, 0, $i, true) +
+            array("NEW:$last_base" => $el) +
+            array_slice($form_def, $i, sizeof($form_def) - $i, true);
+
+          $i++;
+        }
       }
 
       $last_base = $base;
@@ -171,6 +188,14 @@ class osm_tags extends default_file {
     }
 
     $ret = array_merge($ret, parent::form_template($k));
+
+    if(strpos($k, "=") === false) {
+      $ret['translate_values'] = array(
+        'type'  => "boolean",
+        'name'  => "Translate tag values",
+        'default'       => false,
+      );
+    }
 
     if($new == "new_key") {
       $ret = array_merge($ret, array(
