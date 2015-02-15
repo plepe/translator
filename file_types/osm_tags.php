@@ -33,7 +33,7 @@ class osm_tags extends default_file {
           $el = array(
               'type'    => "form",
               'name'    => "new values for {$last_base}",
-              'def'     => call_user_func(array($this, $form_string_fun), $last_base . "=NEW", "new_value"),
+              'def'     => call_user_func(array($this, $form_string_fun), $last_base . "=NEW", null, "new_value"),
               'count'   => array(
                 'default'       => 0,
                 'order'         => false,
@@ -62,7 +62,7 @@ class osm_tags extends default_file {
       'type'        => 'form',
       'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new key"),
       'name'        => "New key(s)",
-      'def'         => call_user_func(array($this, $form_string_fun), "tag:NEW", "new_key"),
+      'def'         => call_user_func(array($this, $form_string_fun), "tag:NEW", null, "new_key"),
     );
   }
 
@@ -114,7 +114,7 @@ class osm_tags extends default_file {
     }
   }
 
-  function form_string($k, $new="") {
+  function form_string($k, $template_data, $new="") {
     $ret = array();
 
     if($new == "new_value") {
@@ -144,26 +144,12 @@ class osm_tags extends default_file {
       );
     }
 
-    $ret = array_merge($ret, array(
-      'message'     => array(
-        'name'        => "Singular",
-        'type'        => 'text',
-      ),
-      '!=1'         => array(
-        'name'        => "Plural",
-        'type'        => 'text',
-      ),
-      'gender'      => array(
-        'name'        => "Gender",
-        'type'        => 'select',
-        'values'      => array("male", "female", "neuter"),
-      ),
-    ));
+    $ret = array_merge($ret, parent::form_string($k, $template_data));
 
     return $ret;
   }
 
-  function form_template($k, $new="") {
+  function form_template($k, $template_data, $new="") {
     $ret = array();
 
     if($new == "new_value") {

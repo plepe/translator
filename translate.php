@@ -46,7 +46,7 @@ $form_def = array();
 foreach($template_data as $k => $v) {
   $form_def[$k] = array(
     'type'      => 'form',
-    'def'       => call_user_func(array($file_type, $form_string_fun), $k),
+    'def'       => call_user_func(array($file_type, $form_string_fun), $k, $v),
     'name'      => $k,
     'desc'      => isset($v['description']) ? $v['description'] : null,
   );
@@ -59,7 +59,7 @@ foreach($template_data as $k => $v) {
 foreach($data as $k => $v) if(!array_key_exists($k, $template_data)) {
   $form_def[$k] = array(
     'type'      => 'form',
-    'def'       => call_user_func(array($file_type, $form_string_fun), $k),
+    'def'       => call_user_func(array($file_type, $form_string_fun), $k, $v),
     'name'      => $k,
     'desc'      => (isset($v['description']) ? $v['description'] : "") . " This message does not exist in the template file.",
   );
