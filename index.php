@@ -46,10 +46,14 @@ $languages = array();
 foreach($translation_apps as $id=>$data) {
   $f = opendir($data['path']);
   while($r = readdir($f)) {
+    // make sure, that the template file is added last
     if(preg_match("/^(.*)\.json$/", $r, $m) && ($m[1] != "template")) {
       $languages[$m[1]] = lang("lang:{$m[1]}");
     }
   }
+
+  $languages['template'] = "Template";
+
   closedir($f);
 }
 

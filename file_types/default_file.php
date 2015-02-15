@@ -14,4 +14,13 @@ class default_file {
       ),
     );
   }
+
+  function form_template($k) {
+    return array(
+      'description'     => array(
+        'name'        => "Description",
+        'type'        => 'textarea',
+      ),
+    );
+  }
 }

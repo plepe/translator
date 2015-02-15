@@ -38,11 +38,15 @@ if(!$template_data) {
 
 $data = json_decode(file_get_contents($file), true);
 
+$form_string_fun = "form_string";
+if($_REQUEST['lang'] == "template")
+  $form_string_fun = "form_template";
+
 $form_def = array();
 foreach($template_data as $k => $v) {
   $form_def[$k] = array(
     'type'      => 'form',
-    'def'       => $file_type->form_string($k),
+    'def'       => call_user_func(array($file_type, $form_string_fun), $k),
     'name'      => $k,
     'desc'      => isset($v['description']) ? $v['description'] : null,
   );
@@ -55,7 +59,7 @@ foreach($template_data as $k => $v) {
 foreach($data as $k => $v) if(!array_key_exists($k, $template_data)) {
   $form_def[$k] = array(
     'type'      => 'form',
-    'def'       => $file_type->form_string($k),
+    'def'       => call_user_func(array($file_type, $form_string_fun), $k),
     'name'      => $k,
     'desc'      => (isset($v['description']) ? $v['description'] : "") . " This message does not exist in the template file.",
   );
