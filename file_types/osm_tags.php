@@ -3,15 +3,6 @@ class osm_tags extends default_file {
   function form_load(&$data, &$form_def) {
     global $template_str;
 
-    $template_new_values = array_merge(array(
-      'value'         =>array(
-        'type'        => 'text',
-        'name'        => "Value",
-        'req'         => true,
-        'desc'        => "E.g. 'bank' for 'amenity=bank'"
-      ),
-    ), $template_str);
-
     $last_base = null;
     $i = 0;
     while($i < sizeof($form_def)) {
@@ -31,7 +22,7 @@ class osm_tags extends default_file {
           array("NEW:$last_base"=>array(
             'type'=>"form",
             'name'=>"new values for {$last_base}",
-            'def'=>$template_new_values,
+            'def'=>$this->form_string($last_base . "=NEW", "new_value"),
             'count'=>array("default"=>0, 'order'=>false, 'button:add_element'=>"Add new value"))) +
           array_slice($form_def, $i, sizeof($form_def) - $i, true);
 
@@ -42,27 +33,11 @@ class osm_tags extends default_file {
       $i++;
     }
 
-    $template_new = array_merge(array(
-      'key'         =>array(
-        'type'        => 'text',
-        'name'        => "Key",
-        'req'         => true,
-        'desc'        => "E.g. 'amenity'"
-      ),
-    ), $template_str);
-
-    $template_new['values'] = array(
-      'type'          => 'form',
-      'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new value"),
-      'name'        => "New values(s)",
-      'def'         => $template_new_values,
-    );
-
     $form_def['NEW_KEY'] = array(
       'type'        => 'form',
       'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new key"),
       'name'        => "New key(s)",
-      'def'         => $template_new,
+      'def'         => $this->form_string("tag:NEW", "new_key"),
     );
   }
 
@@ -112,5 +87,54 @@ class osm_tags extends default_file {
 
       $i++;
     }
+  }
+
+  function form_string($k, $new="") {
+    $ret = array();
+
+    if($new == "new_value") {
+      $ret = array(
+        'value'         =>array(
+          'type'        => 'text',
+          'name'        => "Value",
+          'req'         => true,
+          'desc'        => "E.g. 'bank' for 'amenity=bank'"
+        ),
+      );
+    }
+    elseif($new == "new_key") {
+      $ret = array(
+        'key'         => array(
+          'type'        => 'text',
+          'name'        => "Key",
+          'req'         => true,
+          'desc'        => "E.g. 'amenity'"
+        ),
+        'values'      => array(
+          'type'          => 'form',
+          'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new value"),
+          'name'        => "New values(s)",
+          'def'         => $this->form_string($k . "=NEW", "new_value"),
+        ),
+      );
+    }
+
+    $ret = array_merge($ret, array(
+      'message'     => array(
+        'name'        => "Singular",
+        'type'        => 'text',
+      ),
+      '!=1'         => array(
+        'name'        => "Plural",
+        'type'        => 'text',
+      ),
+      'gender'      => array(
+        'name'        => "Gender",
+        'type'        => 'select',
+        'values'      => array("male", "female", "neuter"),
+      ),
+    ));
+
+    return $ret;
   }
 }

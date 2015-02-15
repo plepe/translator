@@ -29,27 +29,12 @@ $file = "{$app['path']}/{$lang}.json";
 $file_type = new $app['type']();
 
 $data = json_decode(file_get_contents($file), true);
-$template_str = array(
-  'message'     => array(
-    'name'        => "Singular",
-    'type'        => 'text',
-  ),
-  '!=1'         => array(
-    'name'        => "Plural",
-    'type'        => 'text',
-  ),
-  'gender'      => array(
-    'name'        => "Gender",
-    'type'        => 'select',
-    'values'      => array("male", "female", "neuter"),
-  ),
-);
 
 $form_def = array();
 foreach($data as $k => $v) {
   $form_def[$k] = array(
     'type'      => 'form',
-    'def'       => $template_str,
+    'def'       => $file_type->form_string($k),
     'name'      => $k,
     'desc'      => isset($v['description']) ? $v['description'] : null,
   );
