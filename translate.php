@@ -1,6 +1,5 @@
 <?php include "conf.php"; /* load a local configuration */ ?>
 <?php include "modulekit/loader.php"; /* loads all php-includes */ ?>
-<?php include "types/osm_tags.php"; /* loads all php-includes */ ?>
 <?php
 session_start();
 
@@ -27,6 +26,7 @@ if(!preg_match("/^[a-z_\-A-Z]*$/", $lang)) {
 }
 
 $file = "{$app['path']}/{$lang}.json";
+$file_type = new $app['type']();
 
 $data = json_decode(file_get_contents($file), true);
 $template_str = array(
@@ -59,13 +59,13 @@ foreach($data as $k => $v) {
   }
 }
 
-form_load($data, $form_def);
+$file_type->form_load($data, $form_def);
 
 $form = new form('data', $form_def);
 if($form->is_complete()) {
   $data = $form->save_data();
 
-  form_save($data, $form_def);
+  $file_type->form_save($data, $form_def);
 
   // remove null values
   foreach($data as $k=>$v) {

@@ -8,4 +8,9 @@ $translation_apps = array(
     "type" => "osm_tags",
     "name" => "OSM Tags",
   ),
+  'languages' => array(
+    'path' => "/path/to/openstreetmap-tag-translations/languages/",
+    'type' => "default_file",
+    'name' => "Languages",
+  ),
 );

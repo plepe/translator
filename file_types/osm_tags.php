@@ -1,4 +1,5 @@
 <?php
+class osm_tags extends default_file {
   function form_load(&$data, &$form_def) {
     global $template_str;
 
@@ -112,3 +113,4 @@
       $i++;
     }
   }
+}
