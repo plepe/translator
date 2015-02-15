@@ -25,18 +25,39 @@ if(!preg_match("/^[a-z_\-A-Z]*$/", $lang)) {
   exit;
 }
 
+$template_file = "{$app['path']}/template.json";
 $file = "{$app['path']}/{$lang}.json";
+
 $file_type = new $app['type']();
+
+$template_data = json_decode(file_get_contents($template_file), true);
+if(!$template_data) {
+  print "Could not read template file.";
+  $template_data = array();
+}
 
 $data = json_decode(file_get_contents($file), true);
 
 $form_def = array();
-foreach($data as $k => $v) {
+foreach($template_data as $k => $v) {
   $form_def[$k] = array(
     'type'      => 'form',
     'def'       => $file_type->form_string($k),
     'name'      => $k,
     'desc'      => isset($v['description']) ? $v['description'] : null,
+  );
+
+  if(array_key_exists($k, $data) && (gettype($data[$k]) == "string")) {
+    $data[$k] = array("message"=>$data[$k]);
+  }
+}
+
+foreach($data as $k => $v) if(!array_key_exists($k, $template_data)) {
+  $form_def[$k] = array(
+    'type'      => 'form',
+    'def'       => $file_type->form_string($k),
+    'name'      => $k,
+    'desc'      => (isset($v['description']) ? $v['description'] : "") . " This message does not exist in the template file.",
   );
 
   if(gettype($v) == "string") {
