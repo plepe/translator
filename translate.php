@@ -28,7 +28,7 @@ if(!preg_match("/^[a-z_\-A-Z]*$/", $lang)) {
 $template_file = "{$app['path']}/template.json";
 $file = "{$app['path']}/{$lang}.json";
 
-$file_type = new $app['type']();
+$file_type = new $app['type']($lang);
 
 $template_data = json_decode(file_get_contents($template_file), true);
 if(!$template_data) {

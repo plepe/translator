@@ -1,7 +1,15 @@
 <?php
 class osm_tags extends default_file {
+  function __construct($lang) {
+    $this->lang = $lang;
+  }
+
   function form_load(&$form_def, &$data, &$template) {
     global $template_str;
+
+    $form_string_fun = "form_string";
+    if($this->lang == "template")
+      $form_string_fun = "form_template";
 
     $last_base = null;
     $i = 0;
@@ -22,7 +30,7 @@ class osm_tags extends default_file {
           array("NEW:$last_base"=>array(
             'type'=>"form",
             'name'=>"new values for {$last_base}",
-            'def'=>$this->form_string($last_base . "=NEW", "new_value"),
+            'def'=>call_user_func(array($this, $form_string_fun), $last_base . "=NEW", "new_value"),
             'count'=>array("default"=>0, 'order'=>false, 'button:add_element'=>"Add new value"))) +
           array_slice($form_def, $i, sizeof($form_def) - $i, true);
 
@@ -37,7 +45,7 @@ class osm_tags extends default_file {
       'type'        => 'form',
       'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new key"),
       'name'        => "New key(s)",
-      'def'         => $this->form_string("tag:NEW", "new_key"),
+      'def'         => call_user_func(array($this, $form_string_fun), "tag:NEW", "new_key"),
     );
   }
 
@@ -134,6 +142,46 @@ class osm_tags extends default_file {
         'values'      => array("male", "female", "neuter"),
       ),
     ));
+
+    return $ret;
+  }
+
+  function form_template($k, $new="") {
+    $ret = array();
+
+    if($new == "new_value") {
+      $ret = array(
+        'value'         =>array(
+          'type'        => 'text',
+          'name'        => "Value",
+          'req'         => true,
+          'desc'        => "E.g. 'bank' for 'amenity=bank'"
+        ),
+      );
+    }
+    elseif($new == "new_key") {
+      $ret = array(
+        'key'         => array(
+          'type'        => 'text',
+          'name'        => "Key",
+          'req'         => true,
+          'desc'        => "E.g. 'amenity'"
+        ),
+      );
+    }
+
+    $ret = array_merge($ret, parent::form_template($k));
+
+    if($new == "new_key") {
+      $ret = array_merge($ret, array(
+        'values'      => array(
+          'type'          => 'form',
+          'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new value"),
+          'name'        => "New values(s)",
+          'def'         => $this->form_template($k . "=NEW", "new_value"),
+        ),
+      ));
+    }
 
     return $ret;
   }
