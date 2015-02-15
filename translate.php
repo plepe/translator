@@ -69,13 +69,13 @@ foreach($data as $k => $v) if(!array_key_exists($k, $template_data)) {
   }
 }
 
-$file_type->form_load($data, $form_def);
+$file_type->form_load($form_def, $data, $template_data);
 
 $form = new form('data', $form_def);
 if($form->is_complete()) {
   $data = $form->save_data();
 
-  $file_type->form_save($data, $form_def);
+  $file_type->form_save($form_def, $data, $template_data);
 
   // remove null values
   foreach($data as $k=>$v) {

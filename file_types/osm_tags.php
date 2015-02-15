@@ -1,6 +1,6 @@
 <?php
 class osm_tags extends default_file {
-  function form_load(&$data, &$form_def) {
+  function form_load(&$form_def, &$data, &$template) {
     global $template_str;
 
     $last_base = null;
@@ -41,7 +41,7 @@ class osm_tags extends default_file {
     );
   }
 
-  function form_save(&$data) {
+  function form_save(&$form_def, &$data, &$template) {
     $i = 0;
     while($i < sizeof($data)) {
       $keys = array_keys($data);
