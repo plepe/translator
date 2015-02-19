@@ -35,6 +35,26 @@ class default_file {
             'values'      => array("male", "female", "neuter"),
           ),
         );
+      case "lang_config":
+        return array(
+          'has_plural'  => array(
+            'name'        => "Has plural",
+            'type'        => "boolean",
+            'desc'        => "Check, if the current language has a different form for objects in plural than in singular",
+          ),
+          'gender'      => array(
+            'name'        => "Has gender",
+            'type'        => "boolean",
+            'desc'        => "Check, if the current language has a grammatical gender (e.g. different articles whether a word is male or female)",
+          ),
+          'gender_list' => array(
+            'name'        => "List of genders",
+            'type'        => "checkbox",
+            'desc'        => "Check all genders which the current language distinguishes",
+            'values'      => array("male", "female", "neuter"),
+            'show_depend' => array("check", "gender", array("is", true)),
+          ),
+        );
       case "default":
       default:
         return array(
@@ -55,7 +75,7 @@ class default_file {
       'type'            => array(
         'name'            => "Type",
         'type'            => 'select',
-        'values'          => array(null=>"Default", "object"=>"Object"),
+        'values'          => array(null=>"Default", "object"=>"Object", "lang_config"=>"Language Config"),
       ),
     );
   }
