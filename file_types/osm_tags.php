@@ -199,4 +199,9 @@ class osm_tags extends default_file {
 
     return $ret;
   }
+
+  function update_template(&$template_data, $new_keys) {
+    $template_data = array_merge($template_data, array_combine($new_keys, array_fill(0, sizeof($new_keys), null)));
+    $template_data = knatsort($template_data);
+  }
 }

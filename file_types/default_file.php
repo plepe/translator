@@ -115,4 +115,7 @@ class default_file {
       ),
     );
   }
+
+  function update_template(&$template_data, $new_keys) {
+  }
 }

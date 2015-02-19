@@ -93,6 +93,7 @@ $file_type->form_load($form_def, $data, $template_data);
 
 $form = new form('data', $form_def);
 if($form->is_complete()) {
+  $old_data = $data;
   $data = $form->save_data();
 
   $file_type->form_save($form_def, $data, $template_data);
@@ -112,8 +113,13 @@ if($form->is_complete()) {
 
   file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
 
+  $new_keys = array_diff(array_keys($data), array_keys($old_data));
+  $file_type->update_template($template_data, $new_keys);
+  file_put_contents($template_file, json_encode($template_data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+
   chdir($app['path']);
   system("git add \"{$lang}.json\"");
+  system("git add \"template.json\"");
   system("git -c user.name='OSM Translator' -c user.email='translator@openstreetbrowser.org' commit -m 'Update translation ({$lang})' --author='{$_SESSION['username']} <{$_SESSION['username']}@openstreetmap.org>'");
 }
 
