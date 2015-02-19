@@ -74,6 +74,19 @@ foreach($template_data as $k => $v) {
   if(array_key_exists($k, $data) && (gettype($data[$k]) == "string")) {
     $data[$k] = array("message"=>$data[$k]);
   }
+
+  // make sure that data values which are not being edited don't get lost
+  if(array_key_exists($k, $data) && is_array($data[$k])) {
+    $no_edit_data = array_diff_key($data[$k], $form_def[$k]['def']);
+
+    if(sizeof($no_edit_data)) {
+      $form_def[$k]['def']['_other'] = array(
+        'type' => 'json',
+        'name' => '_other',
+      );
+      $data[$k]['_other'] = $no_edit_data;
+    }
+  }
 }
 
 foreach($data as $k => $v) if(!array_key_exists($k, $template_data)) {
@@ -95,6 +108,14 @@ $form = new form('data', $form_def);
 if($form->is_complete()) {
   $old_data = $data;
   $data = $form->save_data();
+
+  // copy non-edited-data back
+  foreach($data as $k=>$v) {
+    if(is_array($v) && array_key_exists('_other', $v)) {
+      $data[$k] = array_merge($data[$k], $data[$k]['_other']);
+      unset($data[$k]['_other']);
+    }
+  }
 
   $file_type->form_save($form_def, $data, $template_data);
 
