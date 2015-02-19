@@ -1,6 +1,12 @@
 <?php
-$oauth_conskey = '';
-$oauth_conssec = '';
+$oauth_config = array(
+  'req_url' => 'https://www.openstreetmap.org/oauth/request_token',
+  'authurl' => 'https://www.openstreetmap.org/oauth/authorize',
+  'acc_url' => 'https://www.openstreetmap.org/oauth/access_token',
+  'api_url' => 'http://api.openstreetmap.org/api/0.6/user/details',
+  'conskey' => '',
+  'conssec' => '',
+);
 
 $translation_apps = array(
   'osm_tags' => array(
