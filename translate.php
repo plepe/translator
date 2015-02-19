@@ -10,6 +10,7 @@ if(!isset($_REQUEST['app']) || (!isset($_REQUEST['lang']))) {
   Header("Location: .");
 }
 
+$error = array();
 call_hooks("init"); /* Initializes all modules, also lang module */
 
 if(!array_key_exists($_REQUEST['app'], $translation_apps)) {
@@ -48,6 +49,9 @@ if(!$lang_config) {
   $tmp = json_decode(file_get_contents($tmp_file), true);
   if(array_key_exists('lang:config', $tmp))
     $lang_config = $tmp['lang:config'];
+}
+if((!$lang_config) && ($_REQUEST['app'] != "languages")) {
+  $error[] = "Please first <a href='translate.php?lang={$lang}&app=languages'>configure this language</a>!";
 }
 if(!$lang_config)
   $lang_config = array();
@@ -126,10 +130,21 @@ Header("Content-Type: text/html; charset=UTF-8");
   <?php print print_add_html_headers(); /* prints additional html headers */ ?>
 </head>
 <body>
-<form method='post' enctype='multipart/form-data'>
 <?php
-print $form->show();
+if(sizeof($error)) {
+  foreach($error as $e) {
+    print "<li>{$e}";
+  }
+}
+else {
+  ?>
+  <form method='post' enctype='multipart/form-data'>
+  <?php
+  print $form->show();
+  ?>
+  <input type='submit' value='Save'/>
+  </form>
+  <?php
+}
 ?>
-<input type='submit' value='Save'/>
-</form>
 </body>
