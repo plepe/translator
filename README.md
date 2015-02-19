@@ -3,5 +3,9 @@ Translation modulekit-lang
 INSTALL
 -------
 ```sh
-apt-get install php5-oauth
+sudo apt-get install php5-oauth
+git submodule init
+git submodule update
 ```
+
+Copy `conf.php-dist` to `conf.php` and adapt to your needs.
