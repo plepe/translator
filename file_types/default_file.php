@@ -16,23 +16,59 @@ class default_file {
   }
 
   function form_string($k, $template_data=null) {
+    global $lang_config;
+
     $type = $this->string_type($k, $template_data);
 
     switch($type) {
       case "object":
-        return array(
+        $ret = array(
           'message'     => array(
-            'name'        => "Singular",
+            'name'        => "Message",
             'type'        => 'text',
           ),
-          '!=1'         => array(
-            'name'        => "Plural",
-            'type'        => 'text',
+        );
+
+        if(array_key_exists('has_plural', $lang_config) && $lang_config['has_plural']) {
+          $ret['message']['name'] = "Singular";
+          $ret = array_merge($ret, array(
+            '!=1'         => array(
+              'name'        => "Plural",
+              'type'        => 'text',
+            ),
+          ));
+        }
+
+        if(array_key_exists('has_gender', $lang_config) && $lang_config['has_gender']) {
+
+          $ret = array_merge($ret, array(
+            'gender'      => array(
+              'name'        => "Gender",
+              'type'        => 'select',
+              'values'      => $lang_config['gender_list'],
+            ),
+          ));
+        }
+
+        return $ret;
+      case "lang_config":
+        return array(
+          'has_plural'  => array(
+            'name'        => "Has plural",
+            'type'        => "boolean",
+            'desc'        => "Check, if the current language has a different form for objects in plural than in singular",
           ),
           'gender'      => array(
-            'name'        => "Gender",
-            'type'        => 'select',
+            'name'        => "Has gender",
+            'type'        => "boolean",
+            'desc'        => "Check, if the current language has a grammatical gender (e.g. different articles whether a word is male or female)",
+          ),
+          'gender_list' => array(
+            'name'        => "List of genders",
+            'type'        => "checkbox",
+            'desc'        => "Check all genders which the current language distinguishes",
             'values'      => array("male", "female", "neuter"),
+            'show_depend' => array("check", "gender", array("is", true)),
           ),
         );
       case "lang_config":

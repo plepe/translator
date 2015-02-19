@@ -36,6 +36,22 @@ if(!$template_data) {
   $template_data = array();
 }
 
+$lang_config = null;
+if(array_key_exists('languages', $translation_apps)) {
+  $tmp_file = "{$translation_apps['languages']['path']}/{$lang}.json";
+  $tmp = json_decode(file_get_contents($tmp_file), true);
+  if(array_key_exists('lang:config', $tmp))
+    $lang_config = $tmp['lang:config'];
+}
+if(!$lang_config) {
+  $tmp_file = modulekit_file("modulekit-lang", "lang/lang_{$lang}.json");
+  $tmp = json_decode(file_get_contents($tmp_file), true);
+  if(array_key_exists('lang:config', $tmp))
+    $lang_config = $tmp['lang:config'];
+}
+if(!$lang_config)
+  $lang_config = array();
+
 $data = json_decode(file_get_contents($file), true);
 
 $form_string_fun = "form_string";
