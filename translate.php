@@ -81,7 +81,7 @@ foreach($template_data as $k => $v) {
 
     if(sizeof($no_edit_data)) {
       $form_def[$k]['def']['_other'] = array(
-        'type' => 'json',
+        'type' => 'hidden',
         'name' => '_other',
       );
       $data[$k]['_other'] = $no_edit_data;
