@@ -27,6 +27,7 @@ class osm_tags extends default_file {
       if(($last_base !== null) && ($last_base != $base)) {
         if((!array_key_exists($last_base, $template)) ||
            ($this->lang == "template") || // lang 'template' can always add values
+           is_array($template[$last_base]) &&
            array_key_exists("translate_values", $template[$last_base]) &&
            $template[$last_base]["translate_values"]) {
 
@@ -112,6 +113,8 @@ class osm_tags extends default_file {
 
       $i++;
     }
+
+    $data = knatsort($data);
   }
 
   function form_string($k, $template_data, $new="") {
