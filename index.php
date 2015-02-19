@@ -5,6 +5,17 @@ session_start();
 call_hooks("init"); /* Initializes all modules, also lang module */
 Header("Content-Type: text/html; charset=UTF-8");
 
+$create_db = false;
+if(!file_exists("{$db_path}/db.sqlite"))
+  $create_db = true;
+
+$db = new PDO("sqlite:{$db_path}/db.sqlite");
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
+if($create_db) {
+  $db->query(file_get_contents(modulekit_file("", "init.sql")));
+}
+
 if(!oauth_check_auth()) {
   exit;
 }

@@ -8,6 +8,8 @@ $oauth_config = array(
   'conssec' => '',
 );
 
+$db_path = "/path/to/database/directory";
+
 $translation_apps = array(
   'osm_tags' => array(
     "path" => "/path/to/openstreetmap-tag-translations/tags/",
