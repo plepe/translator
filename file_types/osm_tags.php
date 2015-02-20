@@ -33,12 +33,12 @@ class osm_tags extends default_file {
 
           $el = array(
               'type'    => "form",
-              'name'    => "new values for {$last_base}",
+              'name'    => null,
               'def'     => call_user_func(array($this, $form_string_fun), $last_base . "=NEW", null, "new_value"),
               'count'   => array(
                 'default'       => 0,
                 'order'         => false,
-                'button:add_element' => "Add new value"
+                'button:add_element' => "Add new value for '{$last_base}='"
               )
             );
 
@@ -61,7 +61,12 @@ class osm_tags extends default_file {
 
     $form_def['NEW_KEY'] = array(
       'type'        => 'form',
-      'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new key"),
+      'count'       => array(
+        'default'=>0,
+        'order'=>false,
+        'button:add_element'=>"Add new key",
+        'hide_label'  => true,
+      ),
       'name'        => "New key(s)",
       'def'         => call_user_func(array($this, $form_string_fun), "tag:NEW", null, "new_key"),
     );
@@ -138,16 +143,21 @@ class osm_tags extends default_file {
           'req'         => true,
           'desc'        => "E.g. 'amenity'"
         ),
-        'values'      => array(
-          'type'          => 'form',
-          'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new value"),
-          'name'        => "New values(s)",
-          'def'         => $this->form_string($k . "=NEW", "new_value"),
-        ),
       );
     }
 
     $ret = array_merge($ret, parent::form_string($k, $template_data));
+
+    if($new == "new_key") {
+      $ret = array_merge($ret, array(
+        'values'      => array(
+          'type'          => 'form',
+          'count'       => array('default'=>0, 'order'=>false, 'button:add_element'=>"Add new value for the new key"),
+          'name'        => null,
+          'def'         => $this->form_string($k . "=NEW", null, "new_value"),
+        ),
+      ));
+    }
 
     return $ret;
   }

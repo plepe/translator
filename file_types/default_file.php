@@ -24,7 +24,7 @@ class default_file {
       case "object":
         $ret = array(
           'message'     => array(
-            'name'        => "Message",
+            'name'        => "Text",
             'type'        => 'text',
           ),
         );
@@ -75,7 +75,7 @@ class default_file {
       default:
         return array(
           'message'     => array(
-            'name'        => "Message",
+            'name'        => "Text",
             'type'        => 'text',
           ),
         );
