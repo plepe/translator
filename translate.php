@@ -26,12 +26,10 @@ if(!preg_match("/^[a-z_\-A-Z]*$/", $lang)) {
   exit;
 }
 
-$template_file = "{$app['path']}/template.json";
-$file = "{$app['path']}/{$lang}.json";
+$file_type = new $app['type']($lang, $app);
 
-$file_type = new $app['type']($lang);
+$template_data = $file_type->get_template_data();
 
-$template_data = json_decode(file_get_contents($template_file), true);
 if(!$template_data) {
   print "Could not read template file.";
   $template_data = array();
@@ -56,7 +54,7 @@ if((!$lang_config) && ($_REQUEST['app'] != "languages")) {
 if(!$lang_config)
   $lang_config = array();
 
-$data = json_decode(file_get_contents($file), true);
+$data = $file_type->load();
 
 $form_string_fun = "form_string";
 if($_REQUEST['lang'] == "template")
@@ -132,7 +130,7 @@ if($form->is_complete()) {
       $data[$k] = null;
   }
 
-  file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+  $file_type->save($data);
 
   $new_keys = array_diff(array_keys($data), array_keys($old_data));
   $file_type->update_template($template_data, $new_keys);

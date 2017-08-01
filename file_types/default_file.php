@@ -1,8 +1,28 @@
 <?php
 class default_file {
-  function __construct($lang) {
+  function __construct($lang, $conf) {
     $this->lang = $lang;
+    $this->conf = $conf;
   }
+
+  function get_template_data () {
+    $template_file = "{$this->conf['path']}/template.json";
+
+    return json_decode(file_get_contents($template_file), true);
+  }
+
+  function load () {
+    $file = "{$this->conf['path']}/{$this->lang}.json";
+
+    return json_decode(file_get_contents($file), true);
+  }
+
+  function save ($data) {
+    $file = "{$this->conf['path']}/{$this->lang}.json";
+
+    file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+  }
+
 
   function form_load(&$form_def, &$data, &$template) {
   }
