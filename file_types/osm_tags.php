@@ -1,9 +1,5 @@
 <?php
 class osm_tags extends default_file {
-  function __construct($lang) {
-    $this->lang = $lang;
-  }
-
   function form_load(&$form_def, &$data, &$template) {
     global $template_str;
 

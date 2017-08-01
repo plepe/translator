@@ -1,5 +1,9 @@
 <?php
 class default_file {
+  function __construct($lang) {
+    $this->lang = $lang;
+  }
+
   function form_load(&$form_def, &$data, &$template) {
   }
 
