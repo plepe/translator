@@ -1,0 +1,51 @@
+#!/usr/bin/php
+<?php
+$dir_in = $argv[1];
+$dir_out = $argv[2];
+$strs = array_slice($argv, 3);
+
+$d = opendir($dir_in);
+while ($file = readdir($d)) {
+  if (preg_match("/\.json$/", $file)) {
+    $lang_str = json_decode(file_get_contents("{$dir_in}/{$file}"), true);
+  }
+  elseif (preg_match("/(.*)\.php$/", $file, $m)) {
+    $lang_str = array();
+    include "{$dir_in}/{$file}";
+    $file = "{$m[1]}.json";
+  }
+  else
+    continue;
+
+  if (file_exists("{$dir_out}/{$file}")) {
+    $data_out = json_decode(file_get_contents("{$dir_out}/{$file}"), true);
+  }
+  else {
+    $data_out = array();
+  }
+
+  foreach ($strs as $str) {
+    if (array_key_exists($str, $lang_str)) {
+      $data_out[$str] = $lang_str[$str];
+    }
+  }
+
+  if (sizeof($data_out)) {
+    ksort($data_out);
+    file_put_contents("{$dir_out}/{$file}", json_encode($data_out, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+  }
+}
+
+if (file_exists("{$dir_out}/template.json"))  {
+  $data_out = json_decode(file_get_contents("{$dir_out}/template.json"), true);
+}
+else {
+  $data_out = array();
+}
+
+foreach ($strs as $str) {
+  $data_out[$str] = '';
+}
+
+ksort($data_out);
+file_put_contents("{$dir_out}/template.json", json_encode($data_out, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));

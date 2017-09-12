@@ -1,0 +1,26 @@
+#!/usr/bin/php
+<?php
+$dir_in = $argv[1];
+$str_from = $argv[2];
+$str_to = $argv[3];
+
+$d = opendir($dir_in);
+while ($file = readdir($d)) {
+  if (preg_match("/\.json$/", $file)) {
+    $lang_str = json_decode(file_get_contents("{$dir_in}/{$file}"), true);
+  }
+  elseif (preg_match("/(.*)\.php$/", $file, $m)) {
+    $lang_str = array();
+    include "{$dir_in}/{$file}";
+    $file = "{$m[1]}.json";
+  }
+  else
+    continue;
+
+
+  $lang_str[$str_to] = $lang_str[$str_from];
+  unset($lang_str[$str_from]);
+
+  ksort($lang_str);
+  file_put_contents("{$dir_in}/{$file}", json_encode($lang_str, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+}
