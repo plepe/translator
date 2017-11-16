@@ -1,11 +1,10 @@
 <?php
 $id = "modulekit-translator";
 
-$depend = array("hooks", "form", "lang", "json_readable_encode");
+$depend = array("hooks", "form", "lang", "json_readable_encode", "modulekit-auth", "auth_form");
 
 $include = array(
   'php' => array(
-    "inc/oauth.php",
     "inc/knatsort.php",
     "file_types/default_file.php",
     "file_types/osm_tags.php",

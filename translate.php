@@ -2,16 +2,21 @@
 <?php include "modulekit/loader.php"; /* loads all php-includes */ ?>
 <?php
 session_start();
+call_hooks("init"); /* Initializes all modules, also lang module */
+Header("Content-Type: text/html; charset=UTF-8");
 
-if(!isset($_SESSION['username'])) {
+$auth = new Auth();
+
+if (!$auth->is_logged_in()) {
   Header("Location: .");
+  exit;
 }
 if(!isset($_REQUEST['app']) || (!isset($_REQUEST['lang']))) {
   Header("Location: .");
+  exit;
 }
 
 $error = array();
-call_hooks("init"); /* Initializes all modules, also lang module */
 
 if(!array_key_exists($_REQUEST['app'], $translation_apps)) {
   print "Invalid App!";
@@ -145,7 +150,6 @@ if($form->is_complete()) {
 if($form->is_empty())
   $form->set_data($data);
 
-Header("Content-Type: text/html; charset=UTF-8");
 ?>
 <html>
 <head>

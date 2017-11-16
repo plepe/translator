@@ -5,20 +5,8 @@ session_start();
 call_hooks("init"); /* Initializes all modules, also lang module */
 Header("Content-Type: text/html; charset=UTF-8");
 
-$create_db = false;
-if(!file_exists("{$db_path}/db.sqlite"))
-  $create_db = true;
-
-$db = new PDO("sqlite:{$db_path}/db.sqlite");
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-
-if($create_db) {
-  $db->query(file_get_contents(modulekit_file("", "init.sql")));
-}
-
-if(!oauth_check_auth()) {
-  exit;
-}
+$auth = new Auth();
+$auth_form = new auth_form($auth);
 
 $languages = array();
 
@@ -76,16 +64,23 @@ if($form->is_complete()) {
 <body>
 
 <?php
-print "<p>Hi, User {$_SESSION['username']}!";
+if ($auth->is_logged_in()) {
+  print "<p>Hi, {$auth->current_user->name()}!";
 
-print "<p>What do you want to translate:\n";
-?>
-<form method='get'>
+  print "<p>What do you want to translate:\n";
+  ?>
+  <form method='get'>
+  <?php
+  print $form->show();
+  ?>
+  <input type='submit'>
+  </form>
 <?php
-print $form->show();
+}
+else {
+  print $auth_form->show_form();
+}
+
+
 ?>
-<input type='submit'>
-</form>
-
-
 </body>
