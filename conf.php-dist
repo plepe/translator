@@ -14,6 +14,7 @@ $auth_config=array(
       'api_url' => 'http://api.openstreetmap.org/api/0.6/user/details',
       'conskey' => '',
       'conssec' => '',
+      'mail_domain' => 'openstreetmap.org',
     ),
   ),
 );
