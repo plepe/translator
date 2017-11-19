@@ -144,7 +144,7 @@ if($form->is_complete()) {
   chdir($app['path']);
   system("git add \"{$lang}.json\"");
   system("git add \"template.json\"");
-  system("git -c user.name='OSM Translator' -c user.email='translator@openstreetbrowser.org' commit -m 'Update translation ({$lang})' --author='{$_SESSION['username']} <{$_SESSION['username']}@openstreetmap.org>'");
+  system("git -c user.name='OSM Translator' -c user.email='translator@openstreetbrowser.org' commit -m 'Update translation ({$lang})' --author='{$auth->current_user->name()} <{$auth->current_user->email()}>");
 }
 
 if($form->is_empty())
