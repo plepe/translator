@@ -9,6 +9,7 @@ $include = array(
     "file_types/default_file.php",
     "file_types/osm_tags.php",
     "file_types/json_files.php",
+    "file_types/languages.php",
   ),
   'css' => array(
     "style.css",
