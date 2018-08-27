@@ -58,6 +58,6 @@ function allDone () {
       ret[keys[i]] = data[keys[i]]
     }
 
-    fs.writeFile(f, JSON.stringify(ret, null, '    ') + '\n')
+    fs.writeFile(f, JSON.stringify(ret, null, '    ') + '\n', () => {})
   })
 }
